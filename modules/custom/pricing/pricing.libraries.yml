@@ -1,0 +1,12 @@
+pricing-styles:
+  version: 1.0
+  css:
+    theme:
+      css/pricing.css: {}
+  js:
+    js/pricing.js: {}
+    js/pricing_actions.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once

@@ -1,0 +1,12 @@
+promo_banner-styles:
+  version: 1.0
+  css:
+    theme:
+      css/promo_banner.css: {}
+  js:
+    js/promo_banner.js: {}
+    js/promo_banner_actions.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once

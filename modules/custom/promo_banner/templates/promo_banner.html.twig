@@ -1,0 +1,15 @@
+<!-- PROMO BANNER (Limited time offer with image) -->
+  <div class="container mt-4 mb-2">
+    <div class="promo-banner text-white p-4 rounded-4 d-flex flex-wrap justify-content-between align-items-center"
+      style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+      <div class="d-flex gap-4 align-items-center flex-wrap">
+        <i class="bi bi-megaphone-fill fs-1 text-warning"></i>
+        <div>
+          <h4 class="mb-0 fw-bold">{{title}}</h4>
+          <p class="mb-0 opacity-75">{{description}}</p>
+        </div>
+      </div>
+      <a href="{{url.url ?? '/'}}" class="btn btn-warning rounded-pill px-4 py-2 mt-2 mt-sm-0 fw-bold" data-bs-toggle="modal"
+        data-bs-target="#signupModal">Claim Offer →</a>
+    </div>
+  </div>

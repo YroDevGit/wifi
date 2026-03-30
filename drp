@@ -1,0 +1,944 @@
+<?php
+
+
+/**
+ * {{ url('<front>') }} // for root url
+ */
+
+if (PHP_SAPI !== 'cli') {
+  echo "This script should only be run from the command line.";
+  exit(1);
+}
+
+$arguments = $argv;
+$route = isset($arguments[1]) ? strtolower($arguments[1]) : '';
+$filename = isset($arguments[2]) ? $arguments[2] : '';
+$extra = isset($arguments[3]) ? $arguments[3] : '';
+$exxr = isset($arguments[4]) ? $arguments[4] : '';
+
+if ($route == "+cmodule") {
+
+  if (! $filename) {
+    echo "Please add name for a module";
+    exit;
+  }
+  $newname = ucfirst($filename);
+  $customPath = "modules/custom/";
+
+  if(! is_dir($customPath)){
+    mkdir($customPath);
+  }
+
+  $mpath = $customPath . $filename;
+  if (! is_dir($mpath)) {
+    mkdir($mpath);
+  }
+
+  $arr = [
+    "css" => $mpath . "/css",
+    "js" => $mpath . "/js",
+    "src" => $mpath . "/src/Plugin/Block",
+    "ssrc" =>$mpath . "/src/Controller",
+    "templates" => $mpath . "/templates"
+  ];
+
+  foreach ($arr as $k => $v) {
+    if (! is_dir($v)) {
+      @mkdir($v, 0777, true);
+    }
+  }
+
+  $h = ucfirst($filename);
+  $ss = strtolower($filename);
+  $spacer = str_replace("_", " ", $h);
+
+  if (! file_exists($mpath . "/" . $filename . ".info.yml")) {
+    $content = <<<EOT
+    name: '$spacer'
+    type: module
+    description: 'Please edit this description'
+    core_version_requirement: ^10
+    package: Custom
+    dependencies: []
+    EOT;
+
+    if (! file_put_contents($mpath . "/" . $filename . ".info.yml", $content)) {
+      echo "Failed to create " . $filename . ".info.yml";
+    }
+  }
+
+  $fjs = $filename."_actions";
+  if (! file_exists($mpath . "/" . $filename . ".libraries.yml")) {
+    $content = <<<EOT
+    $filename-styles:
+      version: 1.0
+      css:
+        theme:
+          css/$filename.css: {}
+      js:
+        js/$filename.js: {}
+        js/$fjs.js: {}
+      dependencies:
+        - core/jquery
+        - core/drupal
+        - core/once
+    EOT;
+
+    if (! file_put_contents($mpath . "/" . $filename . ".libraries.yml", $content)) {
+      echo "Failed to create " . $filename . ".libraries.yml";
+    }
+  }
+
+  if (! file_exists($mpath . "/" . $filename . ".module")) {
+    $themename = $filename . "_theme";
+    $content = <<<EOT
+    <?php
+    /**
+     * Implements hook_theme().
+     */
+    function $themename() {
+      return [
+        '$filename' => [
+          'variables' => [
+            'title' => NULL,
+            'description' => NULL,
+          ],
+          'template' => '$filename',
+        ],
+      ];
+    }
+    EOT;
+
+    if (! file_put_contents($mpath . "/" . $filename . ".module", $content)) {
+      echo "Failed to create " . $filename . ".nodule";
+    }
+  }
+
+  if (! file_exists($mpath . "/templates/" . $filename . ".html.twig")) {
+    $content = <<<EOT
+    <div class="">
+      <span class="">{{ title }}</span>
+      <p class="">{{ description }}</p>
+    </div>
+    EOT;
+
+    if (! file_put_contents($mpath . "/templates/" . $filename . ".html.twig", $content)) {
+      echo "Failed to create " . $mpath . "/templates/" . $filename . ".html.twig";
+    }
+  }
+
+  if (! file_exists($mpath . "/src/Plugin/Block/" . $h . "Block.php")) {
+    $fblock = $filename . "_block";
+    $bn = $h . "Block";
+    $content = <<<EOT
+    <?php
+    namespace Drupal\\$filename\Plugin\Block;
+
+    use Drupal\Core\Block\BlockBase;
+    use Drupal\Core\Form\FormStateInterface;
+    /**
+     * Provides a '$h' Block.
+     *
+     * @Block(
+     *   id = "$fblock",
+     *   admin_label = @Translation("$spacer Block"),
+     *   category = @Translation("Custom Modules")
+     * )
+     */
+    class $bn extends BlockBase {
+      /**
+       * {@inheritdoc}
+       */
+
+      public function defaultConfiguration() {
+        return [
+          'title' => 'Sample Title',
+          'description' => 'Sample description for YroBox component.',
+        ];
+      }
+
+      /**
+       * {@inheritdoc}
+       */
+      public function blockForm(\$form, FormStateInterface \$form_state) {
+        \$form['title'] = [
+          '#type' => 'textfield',
+          '#title' => \$this->t('Title'),
+          '#default_value' => \$this->configuration['title'],
+        ];
+        \$form['description'] = [
+          '#type' => 'fieldset',
+          '#title' => \$this->t('Description'),
+          '#default_value' => \$this->configuration['description'],
+        ];
+        return \$form;
+      }
+
+      /**
+       * {@inheritdoc}
+       */
+      public function blockSubmit(\$form, FormStateInterface \$form_state) {
+        \$this->configuration['title'] = \$form_state->getValue('title');
+        \$this->configuration['description'] = \$form_state->getValue('description');
+      }
+
+      /**
+       * {@inheritdoc}
+       */
+      public function build() {
+        return [
+          '#theme' => '$filename',
+          '#title' => \$this->configuration['title'],
+          '#description' => \$this->configuration['description'],
+          '#attached' => [
+            'library' => [
+              '$filename/$filename-styles',
+            ],
+          ],
+        ];
+      }
+    }
+    EOT;
+
+
+
+    $content2 = <<<EOT
+    <?php
+    namespace Drupal\\$filename\Plugin\Block;
+
+    use Drupal\Core\Block\BlockBase;
+    use Drupal\Core\Form\FormStateInterface;
+    /**
+     * Provides a '$h' Block.
+     *
+     * @Block(
+     *   id = "$fblock",
+     *   admin_label = @Translation("$spacer Block"),
+     *   category = @Translation("Custom Modules")
+     * )
+     */
+    class $bn extends BlockBase {
+      /**
+       * {@inheritdoc}
+       */
+      public function data(array \$array = [])
+      {
+        \$data["title"] = [
+          "type" => "textfield",
+          "label" => "Title",
+          "default" => "Sample title"
+        ];
+
+        \$data["description"] = [
+          "type" => "textarea",
+          "label" => "Description",
+          "default" => "Sample description for YroBox component."
+        ];
+
+        //Add more here...
+
+        return \$data;
+      }
+
+      public static function addOne(array &\$form, FormStateInterface \$form_state)
+      {
+        \$itemKey = ""; //fieldset item key
+
+        \$current = \$form_state->get(\$itemKey);
+        \$current[] = [
+          "title" => "/", //update this field.
+          "subtitle" => "/",
+          "rem" => "/"
+        ];
+
+        \$form_state->set(\$itemKey, \$current);
+        \$newInput = \$form_state->getUserInput(); // Save ang form input value antis mg reload para nd madula ang mga value
+        \$form_state->setUserInput(\$newInput); // Refresh ang UI para ma update pati ang form.
+
+        \$form_state->setRebuild(TRUE);
+      }
+
+      public static function removeOne(array &\$form, FormStateInterface \$form_state)
+      {
+        \$itemKey = "accordions"; //fieldset item key
+
+        \$trigger = \$form_state->getTriggeringElement();
+        \$index = \$trigger["#index"] ?? 0;
+        \$items = \$form_state->get(\$itemKey) ?? [];
+        unset(\$items[\$index]);
+        \$newItems = array_values(\$items);
+
+        \$form_state->set(\$itemKey, \$newItems);
+        \$newInput = \$form_state->getUserInput();// Save ang form input value antis mg reload para nd madula ang mga value
+        unset(\$newInput['settings'][\$itemKey][\$index]); // kakson ang UI sa item nga gn removed
+        \$newData = array_values(\$newInput['settings'][\$itemKey] ?? []);
+        \$newInput['settings'][\$itemKey] = \$newData;
+        \$form_state->setUserInput(\$newInput); // Refresh ang UI para ma update pati ang form.
+        \$form_state->setRebuild(TRUE);
+      }
+
+      public static function ajaxCallback(array \$form, FormStateInterface \$form_state)
+      {
+        \$itemKey = "";
+        \$complete_form = \$form_state->getCompleteForm();
+
+        if (isset(\$complete_form[\$itemKey])) {
+          return \$complete_form[\$itemKey];
+        }
+
+        if (isset(\$complete_form['settings'][\$itemKey])) {
+          return \$complete_form['settings'][\$itemKey];
+        }
+        return \$complete_form;
+      }
+
+      /**
+       * {@inheritdoc}
+       */
+      public function newVariables(){
+        return [];
+      }
+
+      /**
+       * {@inheritdoc}
+       */
+      public function blockSubmit(\$form, FormStateInterface \$form_state)
+      {
+        \$except = []; //keys that has custom process below
+
+        \$data = \$this->data();
+        \Ctrx\DrupalHelper::blockSubmiteFilterCTR(\$data, \$except, \$form, \$form_state, \$this->configuration);
+      }
+
+      /**
+       * {@inheritdoc}
+       * This is a core function, modifying it can cause errors
+       */
+      public function defaultConfiguration()
+      {
+        \$data = \$this->data();
+        \$ret = [];
+        foreach(\$data as \$k=>\$v){
+          if(isset(\$v['type'])){
+            \$type =\$v['type'];
+            if(\$type == "fieldset"){
+              \$ret[\$k] = [];
+            }else if(\$type == "file" || \$type == "file_managed"){
+              \$ret[\$k] = [];
+            }else if(\$type == "submit"){
+              continue;
+            }else{
+              \$ret[\$k] = \$v['default'] ?? "";
+            }
+          }
+        }
+        return \$ret;
+      }
+
+      /**
+       * {@inheritdoc}
+       */
+      public function blockSubmiteFilterCTR(\$data, \$except, \$form, \$form_state)
+      {
+        foreach (\$data as \$k => \$v) {
+          if (in_array(\$v, \$except)) continue;
+          if (isset(\$v['type'])) {
+            if (\$v['type'] == "submit") continue;
+            if (\$v['type'] == "markup" || \$v['type'] == "html") continue;
+            if (\$v['type'] == "fieldset") {
+              \$items = \$v['items'];
+              if (! empty(\$items)) {
+                foreach (\$items as \$ko => \$lo) {
+                  \$this->blockSubmiteFilterCTR(\$lo, [], \$form, \$form_state);
+                }
+              }
+            }
+            \$val = \$form_state->getValue(\$k);
+            if(\$v['type'] == "auto" || \$v['type'] == "auto_complete"){
+              \$node = \Drupal\\node\Entity\Node::load(\$val);
+              if(\$node){
+                \$url = \$node->toUrl()->toString();
+                \$val = [
+                  "page_id" => \$val,
+                  "url" => \$url
+                ];
+              }
+            }
+            \$this->configuration[\$k] = \$val;
+          }
+        }
+      }
+
+      /**
+       * {@inheritdoc}
+       * This is a core function, modifying it can cause errors
+       */
+      public function blockForm(\$form, FormStateInterface \$form_state)
+      {
+        \$data = \$this->data();
+        \$form = [];
+        \$form = \Ctrx\DrupalForm::filterBlockFormCtr(\$data, \$form_state, null, -1, \$this->configuration, \$this);
+        return \$form;
+      }
+
+      /**
+       * {@inheritdoc}
+       * This is a core function, modifying it can cause errors
+       */
+      public function build()
+      {
+        \$token = \Drupal::csrfToken()->get('$ss');
+        \$_SESSION['csrf_token'] = \$token;
+        \$data = \$this->data();
+
+        \$ret =  [
+          '#theme' => '$filename',
+          '#csrf_token' => \$token,
+          '#attached' => [
+            'library' => [
+              '$filename/$filename-styles',
+            ],
+          ],
+        ];
+        foreach (\$data as \$key => \$val) {
+          \$krg = \$this->configuration[\$key] ?? null;
+          if (is_array(\$krg)) {
+            foreach (\$krg as \$k => \$v) {
+              if(! is_array(\$v)) {\$ret["#" . \$key] = \$krg; continue;}
+              \$num = false;
+              foreach (\$v as \$kk => \$vv) {
+                if (\$vv) \$num = true;
+              }
+              if (\$num == true) \$ret["#" . \$key][] = \$krg[\$k];
+            }
+          } else {
+            \$ret["#" . \$key] = \$krg;
+          }
+        }
+        \$newVar = \$this->newVariables();
+        \$ret = [...\$ret, ...\$newVar];
+        return \$ret;
+      }
+    }
+
+    EOT;
+
+    if ($extra == "--plain") {
+      $content2 = $content;
+    }
+    if (! file_put_contents($mpath . "/src/Plugin/Block/" . $h . "Block.php", $content2)) {
+      echo "Failed to create " . $mpath . "/src/Plugin/Block/" . $h . "Block.php";
+    }
+  }
+
+  if($extra == "--form"){
+    $cont = $h."Controller";
+    $fid = $ss."_page_id";
+    if(! file_exists($mpath."/".$filename.".routing.yml")){
+      $content = <<<EOT
+      # Page route
+      $ss.form_page:
+        path: '/$ss'
+        defaults:
+          _controller: '\Drupal\\$ss\Controller\\$cont::form'
+          _title: 'Contact Us'
+        requirements:
+          _permission: 'access content'
+
+      # Submit route
+      $ss.submit:
+        path: '/$ss/submit'
+        defaults:
+          _controller: '\Drupal\\$ss\Controller\\$cont::submit'
+        methods: [POST]
+        requirements:
+          _permission: 'access content'
+      EOT;
+      file_put_contents($mpath."/".$filename.".routing.yml", $content);
+    }
+
+    $tblName = "tbl_".$ss;
+    if(! file_exists($mpath."/".$filename.".install")){
+      $cnt = $ss."_schema";
+        $content = <<<EOT
+        <?php
+        /**
+        function $cnt() {
+          \$schema['$tblName'] = [
+            'fields' => [
+              'id' => ['type' => 'serial', 'not null' => TRUE],
+              'name' => ['type' => 'varchar', 'length' => 255, 'not null' => FALSE],
+              'created' => ['type' => 'int'],
+            ],
+            'primary key' => ['id'],
+          ];
+          return \$schema;
+        }
+        */
+        EOT;
+        file_put_contents($mpath."/".$filename.".install", $content);
+    }
+
+    if(! file_exists($mpath."/src/Controller/".$cont.".php")){
+      $content = <<<EOT
+      <?php
+      namespace Drupal\\$ss\Controller;
+
+      use Drupal\Core\Controller\ControllerBase;
+      use Symfony\Component\HttpFoundation\Request;
+      use Symfony\Component\HttpFoundation\JsonResponse;
+      use Drupal\Core\Database\Database;
+      class $cont extends ControllerBase {
+
+        public function form() {
+          \$token = \Drupal::csrfToken()->get('$ss');
+          \$_SESSION['csrf_token'] = \$token;
+
+          return [
+            '#theme' => '$ss',
+            '#attached' => [
+              'library' => ['$ss/$ss-styles'],
+            ],
+            '#form_id' => '$fid', //add this to your $ss.module file
+            '#csrf_token' => \$token, //add this to your $ss.module file
+          ];
+        }
+
+        public function submit(Request \$request) {
+          /**
+          \$token = \$request->request->get('csrf_token');
+
+          if (!\Drupal::csrfToken()->validate(\$token, '$ss')) {
+            return new JsonResponse(['success' => false, 'message' => 'Invalid CSRF token']);
+          }
+
+          \$name = trim(\$request->request->get('name'));
+          \$email = trim(\$request->request->get('email'));
+          \$message = trim(\$request->request->get('message'));
+
+          if (!\$name || !\$email || !\$message) {
+            return new JsonResponse(['success' => false, 'message' => 'All fields are required']);
+          }
+
+          Database::getConnection()->insert('$tblName')
+            ->fields([
+              'name' => \$name,
+              'email' => \$email,
+              'message' => \$message,
+              'created' => \Drupal::time()->getCurrentTime(),
+            ])->execute();
+
+          return new JsonResponse(['success' => true, 'message' => 'Message saved successfully!']);
+          */
+        }
+      }
+      EOT;
+      file_put_contents($mpath."/src/Controller/".$cont.".php", $content);
+    }
+  }
+
+  if (! file_exists($mpath . "/css/" . $filename . ".css")) {
+    $content = <<<EOT
+    /* $filename css */
+    EOT;
+
+    if (! file_put_contents($mpath . "/css/" . $filename . ".css", $content)) {
+      echo "Failed to create " . $mpath . "/css/" . $filename . ".css";
+    }
+  }
+
+  if (! file_exists($mpath . "/js/" . $filename . ".js")) {
+    $content = <<<EOT
+    // $filename javascript
+    EOT;
+
+    if (! file_put_contents($mpath . "/js/" . $filename . ".js", $content)) {
+      echo "Failed to create " . $mpath . "/js/" . $filename . ".js";
+    }
+  }
+
+  $formId = $ss."_form_id";
+  if (! file_exists($mpath . "/js/" . $fjs . ".js")) {
+    $fform = $h."Form";
+    $content = <<<EOT
+    // $filename javascript
+    (function (Drupal, once) {
+      Drupal.behaviors.$fform = {
+        attach: function (context) {
+          const forms = once('$fform', context.querySelectorAll('form[id^="$formId"]'));
+
+          forms.forEach(form => {
+            form.addEventListener('submit', function (e) {
+              e.preventDefault();
+              const data = new FormData(form);
+
+              fetch(drupalSettings.path.baseUrl+'$ss/submit', {
+                method: 'POST',
+                body: data,
+                credentials: 'same-origin'
+              })
+              .then(res => res.json())
+              .then(res => {
+                const el = form.nextElementSibling; // #response div
+                if (res.success) {
+                  //Add action if access
+                  form.reset();
+                } else {
+                 //Add action when failed
+                }
+              });
+            });
+          });
+        }
+      };
+    })(Drupal, once);
+    EOT;
+
+    if (! file_put_contents($mpath . "/js/" . $fjs . ".js", $content)) {
+      echo "Failed to create " . $mpath . "/js/" . $fjs . ".js";
+    }
+  }
+  echo "✅ Custom module $h created";
+}
+
+//add Theme
+if ($route == "+ctheme") {
+
+  if (! $filename) {
+    echo "Please add name for a theme";
+    exit;
+  }
+
+  $h = ucfirst($filename);
+  $customPath = "themes/custom/";
+  $tpath = $customPath . $filename;
+  $ss = strtolower($filename);
+
+  if (! is_dir($tpath)) {
+    mkdir($tpath, 0777, true);
+  }
+
+  $arr = [
+    "css" => $tpath . "/css",
+    "js" => $tpath . "/js",
+    "templates" => $tpath . "/templates"
+  ];
+
+  foreach ($arr as $k => $v) {
+    if (! is_dir($v)) {
+      @mkdir($v, 0777, true);
+    }
+  }
+
+  /* info.yml */
+
+  $spacer = str_replace("_", " ", $h);
+  if (! file_exists($tpath . "/" . $filename . ".info.yml")) {
+    $content = <<<EOT
+name: '$spacer'
+type: theme
+description: 'Custom Drupal Theme'
+core_version_requirement: ^10
+base theme: false
+
+libraries:
+  - $filename/global
+
+regions:
+  header: Header
+  content: Content
+  footer: Footer
+EOT;
+
+    file_put_contents($tpath . "/" . $filename . ".info.yml", $content);
+  }
+
+  /* libraries.yml */
+
+  if (! file_exists($tpath . "/" . $filename . ".libraries.yml")) {
+    $content = <<<EOT
+global:
+  css:
+    theme:
+      css/style.css: {}
+      css/special_$ss.css : {}
+  js:
+    js/script.js: {}
+EOT;
+
+    file_put_contents($tpath . "/" . $filename . ".libraries.yml", $content);
+  }
+
+
+  if (! file_exists($tpath . "/" . $filename . ".theme")) {
+    $funcname = $ss."_preprocess";
+    $content = <<<EOT
+    <?php
+
+    function $funcname(&\$variables) {
+      \$site_config = \Drupal::config('system.site');
+
+      \$variables['site'] = [
+        'name' => \$site_config->get('name'),
+        'slogan' => \$site_config->get('slogan'),
+        'mail' => \$site_config->get('mail'),
+      ];
+    }
+EOT;
+
+    file_put_contents($tpath . "/" . $filename . ".theme", $content);
+  }
+
+  /* html.html.twig */
+
+  if (! file_exists($tpath . "/templates/html.html.twig")) {
+    $content = <<<EOT
+<!DOCTYPE html>
+<html{{ html_attributes }}>
+<head>
+  <head-placeholder token="{{ placeholder_token }}">
+  <title>{{ head_title|safe_join(' | ') }}</title>
+  <css-placeholder token="{{ placeholder_token }}">
+  <js-placeholder token="{{ placeholder_token }}">
+</head>
+
+<body{{ attributes }}>
+  {{ page_top }}
+  {{ page }}
+  {{ page_bottom }}
+  <js-bottom-placeholder token="{{ placeholder_token }}">
+</body>
+</html>
+EOT;
+
+    file_put_contents($tpath . "/templates/html.html.twig", $content);
+  }
+
+  /* page.html.twig */
+
+  if (! file_exists($tpath . "/templates/page.html.twig")) {
+    $content = <<<EOT
+{{ page.header }}
+
+<main class="site-content">
+  {{ page.content }}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>© {{ "now"|date("Y") }} {{ site_name }}</p>
+  </div>
+</footer>
+EOT;
+
+    file_put_contents($tpath . "/templates/page.html.twig", $content);
+  }
+
+  /* block.html.twig */
+
+  if (! file_exists($tpath . "/templates/block.html.twig")) {
+
+    $content = <<<EOT
+{% if logged_in %}
+  <div{{ attributes }}>
+    {{ title_prefix }}
+    {% if label %}
+      <h2{{ title_attributes }}>{{ label }}</h2>
+    {% endif %}
+    {{ title_suffix }}
+    {% block content %}
+      {{ content }}
+    {% endblock %}
+  </div>
+{% else %}
+  {{ content }}
+{% endif %}
+EOT;
+
+    file_put_contents($tpath . "/templates/block.html.twig", $content);
+  }
+
+  /* node template */
+
+  if (! file_exists($tpath . "/templates/node--contenttype--full.html.twig")) {
+    $content = <<<EOT
+<!-- content structure for specific content type -->
+EOT;
+
+    file_put_contents($tpath . "/templates/node--contenttype--full.html.twig", $content);
+  }
+
+  /* CSS */
+
+  if (! file_exists($tpath . "/css/style.css")) {
+    $content = <<<EOT
+/* $filename theme styles */
+
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+}
+
+.site-header{
+  background:#222;
+  color:#fff;
+  padding:20px;
+}
+
+.site-footer{
+  background:#111;
+  color:#fff;
+  padding:20px;
+}
+EOT;
+
+    file_put_contents($tpath . "/css/style.css", $content);
+  }
+
+
+  if(! file_exists($tpath . "/css/special_".$ss.".css")){
+    $content = <<<EOT
+    /* Scope all styles to the Layout Builder form */
+    .node-page-layout-builder-form.node-layout-builder-form.layout-builder-form {
+      font-family: Arial, sans-serif; /* optional: consistent font */
+      color: #333;
+      padding: 20px;
+    }
+
+    /* --- Action Buttons --- */
+    .node-page-layout-builder-form .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    /* Primary button (Save layout) */
+    .node-page-layout-builder-form .form-actions .button--primary {
+      background-color: #0074bd;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .node-page-layout-builder-form .form-actions .button--primary:hover {
+      background-color: #005a99;
+    }
+
+    /* Secondary buttons (Discard / Revert) */
+    .node-page-layout-builder-form .form-actions .button:not(.button--primary) {
+      background-color: #f5f5f5;
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .node-page-layout-builder-form .form-actions .button:not(.button--primary):hover {
+      background-color: #e0e0e0;
+      border-color: #999;
+    }
+
+    /* Align preview checkbox to right */
+    .node-page-layout-builder-form .form-actions #edit-preview-toggle {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* --- Layout Builder Messages --- */
+    .node-page-layout-builder-form .layout-builder__message {
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 10px 14px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      color: #856404;
+    }
+
+    /* --- Layout Sections --- */
+    .node-page-layout-builder-form .field--type-layout-section {
+      border: 1px dashed #ccc;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      background-color: #f9f9f9;
+    }
+
+    /* Optional: make action bar sticky at top */
+    .node-page-layout-builder-form .form-actions.sticky {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      z-index: 999;
+    }
+
+    /* Optional: style vertical tabs */
+    .node-page-layout-builder-form .vertical-tabs__menu-item {
+      background: #f5f5f5;
+      border: 1px solid #ccc;
+      border-radius: 3px 3px 0 0;
+      margin-right: 2px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    .node-page-layout-builder-form .vertical-tabs__menu-item.is-selected {
+      background: #0074bd;
+      color: #fff;
+    }
+    EOT;
+
+    file_put_contents($tpath . "/css/special_".$ss.".css", $content);
+  }
+
+  /* JS */
+
+  if (! file_exists($tpath . "/js/script.js")) {
+    $content = <<<EOT
+// $filename theme javascript
+console.log("$filename theme loaded");
+EOT;
+
+    file_put_contents($tpath . "/js/script.js", $content);
+  }
+
+  echo "✅ Theme '$filename' created successfully.";
+}
+
+
+
+/**
+ * composer require ctrx/drupal-helper
+ * composer require drupal/media_library_form_element
+ *
+ * drupalSettings.path.baseUrl
+ *
+ * <input type="hidden" name="csrf_token" value="{{ drupal_csrf_token('contact_us') }}">
+ *
+ * drush pm:uninstall layout_builder_expose_all_field_blocks -y
+ *
+ * alias drush='/c/xampp/htdocs/themewagon/vendor/bin/drush'
+ *
+ * drupal ecommers: composer.json set "minimum-stability": "dev", composer require drupal/commerce
+ *
+ *add this on sites\default\settings.php
+ * $settings['config_sync_directory'] = 'sites/default/files/config_qZSoaSGBeO4PdoE8_oy650MrGj-IGmMYH-JeRYVPhO2bddCRa2cqru9cWOH3sE20O08aJxRc3g/sync';
+* $config['system.logging']['error_level'] = 'verbose';
+ */
+

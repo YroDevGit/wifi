@@ -1,0 +1,12 @@
+hero_banner-styles:
+  version: 1.0
+  css:
+    theme:
+      css/hero_banner.css: {}
+  js:
+    js/hero_banner.js: {}
+    js/hero_banner_actions.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/once

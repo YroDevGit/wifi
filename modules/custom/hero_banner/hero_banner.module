@@ -1,0 +1,21 @@
+<?php
+/**
+ * Implements hook_theme().
+ */
+function hero_banner_theme() {
+  return [
+    'hero_banner' => [
+      'variables' => [
+        'title' => NULL,
+        'description' => NULL,
+        'promos' => [],
+        'gb' => NULL,
+        "explore_url" => NULL,
+        "install_url" => NULL,
+        "promo_check" => 0,
+        "img" => []
+      ],
+      'template' => 'hero_banner',
+    ],
+  ];
+}

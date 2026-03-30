@@ -1,0 +1,15 @@
+<?php
+/**
+ * Implements hook_theme().
+ */
+function pricing_theme() {
+  return [
+    'pricing' => [
+      'variables' => [
+        'title' => NULL,
+        'description' => NULL,
+      ],
+      'template' => 'pricing',
+    ],
+  ];
+}

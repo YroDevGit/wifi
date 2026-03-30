@@ -1,0 +1,11 @@
+<?php
+
+function main_preprocess(&$variables) {
+  $site_config = \Drupal::config('system.site');
+
+  $variables['site'] = [
+    'name' => $site_config->get('name'),
+    'slogan' => $site_config->get('slogan'),
+    'mail' => $site_config->get('mail')
+  ];
+}

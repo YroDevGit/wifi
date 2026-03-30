@@ -1,0 +1,16 @@
+<?php
+/**
+ * Implements hook_theme().
+ */
+function promo_banner_theme() {
+  return [
+    'promo_banner' => [
+      'variables' => [
+        'title' => NULL,
+        'description' => NULL,
+        'url' => []
+      ],
+      'template' => 'promo_banner',
+    ],
+  ];
+}

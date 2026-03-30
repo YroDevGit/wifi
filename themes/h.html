@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>NexusWave | Ultra-Fast Fiber WiFi</title>
+  <!-- Bootstrap 5 CSS + Icons + Google Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts (Inter & Poppins for modern look) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Poppins:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      scroll-behavior: smooth;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    .navbar-brand,
+    .btn {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .bg-soft-primary {
+      background-color: #eef4ff;
+    }
+
+    .shadow-card {
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .shadow-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+    }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background-color: rgba(255, 255, 255, 0.92) !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, #052c65 0%, #0b5ed7 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" fill-opacity="0.2" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,170.7C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') repeat-x bottom;
+      background-size: cover;
+      opacity: 0.2;
+    }
+
+    .promo-banner {
+      background: linear-gradient(96deg, #1e293b 0%, #0f172a 100%);
+      border-left: 6px solid #ffb703;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background-color: #eef2ff;
+      color: #0b5ed7;
+      font-weight: 600;
+    }
+
+    .accordion-button:focus {
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+      border-color: #86b7fe;
+    }
+
+    .price-card {
+      border-radius: 2rem;
+      transition: all 0.2s;
+    }
+
+    .price-card.popular {
+      border: 1px solid #0d6efd;
+      background: white;
+      position: relative;
+      transform: scale(1.02);
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.2);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0d6efd;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      letter-spacing: 1px;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: #eef2ff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 28px;
+      font-size: 1.5rem;
+      color: #0d6efd;
+    }
+
+    footer a {
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: #0d6efd !important;
+    }
+
+    .wifi-illustration {
+      filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.1));
+      transition: transform 0.3s ease;
+    }
+
+    .wifi-illustration:hover {
+      transform: scale(1.02);
+    }
+
+    .testimonial-img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 768px) {
+      .price-card.popular {
+        transform: scale(1);
+      }
+
+      .hero-section h1 {
+        font-size: 2.2rem;
+      }
+    }
+
+    .hero-img {
+      object-fit: cover;
+      width: 100%;
+      height: auto;
+      border-radius: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg sticky-top py-3">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-3" href="#">
+        <i class="bi bi-wifi text-primary me-2"></i>NexusWave
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+        aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold gap-2">
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#plans">Plans</a></li>
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+        <div class="d-flex">
+          <a href="#" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal"
+            data-bs-target="#signupModal">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section with Image Banner (working image) -->
+  <section class="hero-section text-white py-5 overflow-hidden">
+    <div class="container py-lg-5 my-3">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6 order-lg-1 order-2">
+          <span class="badge bg-warning text-dark mb-3 px-3 py-2 rounded-pill"><i class="bi bi-speedometer2"></i> Up to
+            1 Gbps</span>
+          <h1 class="display-4 fw-bold mb-3">Lightning-Fast WiFi <br>for the Connected Life</h1>
+          <p class="lead mb-4 opacity-90">Unlimited data, symmetrical speeds, and 99.9% uptime. Stream, work, game —
+            without limits.</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="#plans" class="btn btn-light btn-lg rounded-pill px-5 py-3 fw-semibold text-primary">Explore Plans
+              <i class="bi bi-arrow-right-short"></i></a>
+            <a href="#" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3" data-bs-toggle="modal"
+              data-bs-target="#signupModal">Get Installation</a>
+          </div>
+          <div class="mt-4 d-flex gap-4 small">
+            <div><i class="bi bi-check-circle-fill me-1"></i> No data caps</div>
+            <div><i class="bi bi-check-circle-fill me-1"></i> Free modem + router</div>
+            <div><i class="bi bi-check-circle-fill me-1"></i> 24/7 support</div>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2 order-1 text-center">
+          <!-- Working sample image: modern WiFi router setup -->
+          <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=450&fit=crop"
+            alt="Modern WiFi Router and Smart Home Devices"
+            class="img-fluid wifi-illustration rounded-4 shadow-lg hero-img"
+            style="max-width: 100%; height: auto; object-fit: cover; min-height: 300px;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMO BANNER (Limited time offer with image) -->
+  <div class="container mt-4 mb-2">
+    <div class="promo-banner text-white p-4 rounded-4 d-flex flex-wrap justify-content-between align-items-center"
+      style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+      <div class="d-flex gap-4 align-items-center flex-wrap">
+        <i class="bi bi-megaphone-fill fs-1 text-warning"></i>
+        <div>
+          <h4 class="mb-0 fw-bold">🔥 Flash Sale: 50% OFF first 3 months</h4>
+          <p class="mb-0 opacity-75">Plus free installation & WiFi 6 router upgrade. Limited slots — claim now!</p>
+        </div>
+      </div>
+      <a href="#" class="btn btn-warning rounded-pill px-4 py-2 mt-2 mt-sm-0 fw-bold" data-bs-toggle="modal"
+        data-bs-target="#signupModal">Claim Offer →</a>
+    </div>
+  </div>
+
+  <!-- PLANS / PRICING SECTION (Cards) -->
+  <section id="plans" class="py-5">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Internet Plans</span>
+        <h2 class="display-5 fw-bold mt-2">Choose Your Perfect Speed</h2>
+        <p class="lead text-secondary w-75 mx-auto">Fiber-powered plans with symmetrical upload & download, no
+          contracts.</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <!-- Plan 1 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 border-0 shadow-card price-card p-4">
+            <h3 class="fw-bold">Essential</h3>
+            <div class="mt-2 mb-3"><span class="display-4 fw-bold">$39</span><span class="text-secondary">/mo</span>
+            </div>
+            <hr>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li class="mb-2"><i class="bi bi-wifi text-primary me-2"></i> 300 Mbps Download</li>
+              <li class="mb-2"><i class="bi bi-wifi text-primary me-2"></i> 300 Mbps Upload</li>
+              <li class="mb-2"><i class="bi bi-infinity text-primary me-2"></i> Unlimited Data</li>
+              <li class="mb-2"><i class="bi bi-router text-primary me-2"></i> Standard Router</li>
+            </ul>
+            <div class="mt-auto"><a href="#" class="btn btn-outline-primary rounded-pill w-100 py-2"
+                data-bs-toggle="modal" data-bs-target="#signupModal">Get Essential</a></div>
+          </div>
+        </div>
+        <!-- Plan 2 (Popular) -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 border-0 shadow-card price-card popular p-4">
+            <div class="popular-badge">🔥 MOST POPULAR</div>
+            <h3 class="fw-bold">Pro Turbo</h3>
+            <div class="mt-2 mb-3"><span class="display-4 fw-bold">$59</span><span class="text-secondary">/mo</span>
+            </div>
+            <hr>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li class="mb-2"><i class="bi bi-wifi text-primary me-2"></i> 800 Mbps / 800 Mbps</li>
+              <li class="mb-2"><i class="bi bi-shield-check text-primary me-2"></i> WiFi 6 Mesh Extender</li>
+              <li class="mb-2"><i class="bi bi-infinity text-primary me-2"></i> Unlimited + Priority Support</li>
+              <li class="mb-2"><i class="bi bi-trophy text-primary me-2"></i> Free Static IP</li>
+            </ul>
+            <div class="mt-auto"><a href="#" class="btn btn-primary rounded-pill w-100 py-2" data-bs-toggle="modal"
+                data-bs-target="#signupModal">Upgrade to Pro</a></div>
+          </div>
+        </div>
+        <!-- Plan 3 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 border-0 shadow-card price-card p-4">
+            <h3 class="fw-bold">Gigabit Elite</h3>
+            <div class="mt-2 mb-3"><span class="display-4 fw-bold">$89</span><span class="text-secondary">/mo</span>
+            </div>
+            <hr>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li class="mb-2"><i class="bi bi-lightning-charge text-primary me-2"></i> 1.2 Gbps / 1 Gbps</li>
+              <li class="mb-2"><i class="bi bi-phone text-primary me-2"></i> Whole-home WiFi Mesh</li>
+              <li class="mb-2"><i class="bi bi-laptop text-primary me-2"></i> Advanced Security Suite</li>
+              <li class="mb-2"><i class="bi bi-gem text-primary me-2"></i> Priority 24/7 Technician</li>
+            </ul>
+            <div class="mt-auto"><a href="#" class="btn btn-outline-primary rounded-pill w-100 py-2"
+                data-bs-toggle="modal" data-bs-target="#signupModal">Go Elite</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features / Highlights Section with sample image -->
+  <section id="features" class="py-5 bg-soft-primary">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <i class="bi bi-stars fs-1 text-primary"></i>
+        <h2 class="display-5 fw-bold mt-2">Why thousands choose NexusWave</h2>
+        <p class="lead text-secondary">Reliability meets next-gen performance</p>
+      </div>
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="card border-0 bg-transparent text-center p-3">
+                <div class="feature-icon mx-auto mb-3"><i class="bi bi-trophy-fill"></i></div>
+                <h5>99.9% Uptime SLA</h5>
+                <p class="text-secondary">Enterprise-grade fiber with redundant network.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card border-0 bg-transparent text-center p-3">
+                <div class="feature-icon mx-auto mb-3"><i class="bi bi-shield-lock-fill"></i></div>
+                <h5>Advanced Security</h5>
+                <p class="text-secondary">Built-in VPN & threat protection for all devices.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card border-0 bg-transparent text-center p-3">
+                <div class="feature-icon mx-auto mb-3"><i class="bi bi-chat-dots-fill"></i></div>
+                <h5>24/7 Local Support</h5>
+                <p class="text-secondary">Real humans, real solutions — instant assistance.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card border-0 bg-transparent text-center p-3">
+                <div class="feature-icon mx-auto mb-3"><i class="bi bi-calendar-check-fill"></i></div>
+                <h5>Same-Day Setup</h5>
+                <p class="text-secondary">Book before 2pm, technician arrives today.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 text-center">
+          <!-- Working sample image: Fiber optic installation -->
+          <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=600&h=400&fit=crop"
+            alt="Fiber optic technician installing internet" class="img-fluid rounded-4 shadow-lg"
+            style="max-height: 380px; width: 100%; object-fit: cover;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ ACCORDIONS + Side image banner -->
+  <section id="faq" class="py-5">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <span class="badge bg-secondary bg-opacity-10 text-dark px-3 py-2 rounded-pill">Common Questions</span>
+        <h2 class="display-5 fw-bold mt-2">Got questions? We've got answers.</h2>
+        <p class="lead text-secondary w-75 mx-auto">Everything you need to know about our WiFi plans and installation.
+        </p>
+      </div>
+      <div class="row justify-content-center g-5">
+        <div class="col-lg-7">
+          <div class="accordion" id="faqAccordion">
+            <div class="accordion-item mb-3 border rounded-4 shadow-sm">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button rounded-4 fw-semibold" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <i class="bi bi-question-circle-fill me-2 text-primary"></i> What is the installation process?
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-secondary">Our certified technician will visit your home, install the
+                  fiber optic terminal, set up the WiFi router, and ensure all devices are connected. Installation is
+                  FREE with any annual plan, and same-day installation available in most areas.</div>
+              </div>
+            </div>
+            <div class="accordion-item mb-3 border rounded-4 shadow-sm">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed rounded-4 fw-semibold" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <i class="bi bi-wifi-off me-2 text-primary"></i> Is there a data cap or throttling?
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-secondary">Absolutely not. All NexusWave residential plans include
+                  <strong>unlimited data</strong> with no throttling, no matter how much you stream, game, or work from
+                  home.</div>
+              </div>
+            </div>
+            <div class="accordion-item mb-3 border rounded-4 shadow-sm">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed rounded-4 fw-semibold" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  <i class="bi bi-arrow-repeat me-2 text-primary"></i> Can I keep my existing router?
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-secondary">Yes! You may use your own compatible router. Our included
+                  WiFi 6 router is optimized for our fiber speeds and includes advanced security features.</div>
+              </div>
+            </div>
+            <div class="accordion-item mb-3 border rounded-4 shadow-sm">
+              <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed rounded-4 fw-semibold" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                  <i class="bi bi-credit-card me-2 text-primary"></i> Are there any contracts or hidden fees?
+                </button>
+              </h2>
+              <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-secondary">Month-to-month options available with no long-term contract.
+                  No hidden fees — what you see is what you pay.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <!-- Side image banner for FAQ section -->
+          <div class="card border-0 rounded-4 overflow-hidden shadow-lg">
+            <img src="https://images.unsplash.com/photo-1558002038-1055e2e28e8d?w=500&h=280&fit=crop"
+              alt="Happy family using WiFi" class="img-fluid w-100" style="height: 280px; object-fit: cover;">
+            <div class="p-4 bg-white text-center">
+              <i class="bi bi-headset fs-1 text-primary"></i>
+              <h5 class="mt-2">24/7 Customer Support</h5>
+              <p class="small text-secondary">Our support team is ready to help anytime via chat or call.</p>
+              <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">Live Chat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial / Social Proof Section with avatar images -->
+  <section class="py-5 bg-white">
+    <div class="container">
+      <div class="text-center mb-4">
+        <i class="bi bi-chat-quote-fill fs-1 text-primary opacity-75"></i>
+        <h3 class="fw-bold">Loved by 10,000+ happy subscribers</h3>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card border-0 bg-light p-4 rounded-4 shadow-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Danielle"
+                class="testimonial-img border border-2 border-primary">
+              <div>
+                <div class="text-warning"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                <small class="text-secondary">Verified Customer</small>
+              </div>
+            </div>
+            <p class="fst-italic">“Switched to NexusWave from cable — my ping dropped by 80%. Now I can game and stream
+              4K simultaneously. Best decision!”</p>
+            <div class="mt-2 fw-semibold">— Danielle R.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 bg-light p-4 rounded-4 shadow-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Marcus"
+                class="testimonial-img border border-2 border-primary">
+              <div>
+                <div class="text-warning"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                <small class="text-secondary">Gigabit Elite User</small>
+              </div>
+            </div>
+            <p class="fst-italic">“Support team is incredible. They helped me within minutes and the fiber installation
+              was super clean. 10/10 reliability.”</p>
+            <div class="mt-2 fw-semibold">— Marcus T.</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 bg-light p-4 rounded-4 shadow-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Sofia"
+                class="testimonial-img border border-2 border-primary">
+              <div>
+                <div class="text-warning"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i></div>
+                <small class="text-secondary">Pro Plan Subscriber</small>
+              </div>
+            </div>
+            <p class="fst-italic">“Pro Turbo plan gives insane upload speeds for my video editing cloud workflow. Worth
+              every penny.”</p>
+            <div class="mt-2 fw-semibold">— Sofia K.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer + Contact Section -->
+  <footer id="contact" class="bg-dark text-white pt-5 pb-4">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-md-5">
+          <a class="navbar-brand text-white fw-bold fs-3" href="#"><i class="bi bi-wifi me-2"></i>NexusWave</a>
+          <p class="text-white-50 mt-3">Redefining connectivity with future-proof fiber internet. Fast, fair, and truly
+            unlimited.</p>
+          <div class="d-flex gap-3 mt-3">
+            <a href="#" class="text-white-50"><i class="bi bi-facebook fs-5"></i></a>
+            <a href="#" class="text-white-50"><i class="bi bi-twitter-x fs-5"></i></a>
+            <a href="#" class="text-white-50"><i class="bi bi-instagram fs-5"></i></a>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <h5 class="fw-semibold">Explore</h5>
+          <ul class="list-unstyled mt-3">
+            <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Coverage Map</a></li>
+            <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Business Plans</a></li>
+            <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Referral Program</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5 class="fw-semibold">Contact Us</h5>
+          <ul class="list-unstyled mt-3 text-white-50">
+            <li class="mb-2"><i class="bi bi-telephone-fill me-2"></i> 1-800-WAVEFIBER</li>
+            <li class="mb-2"><i class="bi bi-envelope-fill me-2"></i> hello@nexuswave.com</li>
+            <li class="mb-2"><i class="bi bi-geo-alt-fill me-2"></i> 123 Fiber Ave, Suite 100, Austin, TX</li>
+          </ul>
+        </div>
+      </div>
+      <hr class="mt-4 opacity-25">
+      <div class="text-center text-white-50 small">© 2025 NexusWave Communications — Empowering seamless connectivity.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Signup Modal -->
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow-lg">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold fs-4" id="signupModalLabel">Get NexusWave WiFi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body pt-0 px-4 pb-4">
+          <p class="text-secondary">Fill your details to claim exclusive offers and free installation.</p>
+          <form>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Full name</label>
+              <input type="text" class="form-control" placeholder="John Carter">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email address</label>
+              <input type="email" class="form-control" placeholder="hello@example.com">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Phone number</label>
+              <input type="tel" class="form-control" placeholder="(555) 123-4567">
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Preferred plan</label>
+              <select class="form-select">
+                <option>Essential 300 Mbps</option>
+                <option selected>Pro Turbo 800 Mbps (Popular)</option>
+                <option>Gigabit Elite 1.2 Gbps</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">Sign up & Claim Promo
+              →</button>
+            <p class="small text-secondary mt-3 text-center">No spam, no contracts. We'll contact you within 2h.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
