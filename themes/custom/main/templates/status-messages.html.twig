@@ -1,0 +1,50 @@
+{#
+/**
+ * Redesigned Status Messages (Modern UI)
+ */
+#}
+
+<div data-drupal-messages class="drupal-messages-wrapper">
+  {% for type, messages in message_list %}
+    <div
+      role="contentinfo"
+      aria-label="{{ status_headings[type] }}"
+      {{ attributes|without('role', 'aria-label') }}
+      class="message-box message-{{ type }}"
+    >
+
+      {% if type == 'error' %}
+        <div role="alert" class="message-alert">
+      {% endif %}
+
+      {% if status_headings[type] %}
+        <div class="message-title visually-hidden">
+          {{ status_headings[type] }}
+        </div>
+      {% endif %}
+
+      <div class="message-content">
+
+        {% if messages|length > 1 %}
+          <ul class="message-list">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="message-single">
+            {{ messages|first }}
+          </div>
+        {% endif %}
+
+      </div>
+
+      {% if type == 'error' %}
+        </div>
+      {% endif %}
+
+    </div>
+
+  {% endfor %}
+
+</div>

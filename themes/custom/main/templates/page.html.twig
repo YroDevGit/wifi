@@ -1,3 +1,6 @@
+{% if logged_in %}
+
+
 {{ page.header }}
 
 <nav class="navbar navbar-expand-lg sticky-top py-3">
@@ -132,3 +135,9 @@
 		</div>
 	</div>
 </footer>
+
+{% else %}
+  <div style="padding-top:200px;" align="center">{{ page.content }}</div>
+{% endif %}
+
+
