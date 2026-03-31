@@ -662,6 +662,7 @@ global:
     theme:
       css/style.css: {}
       css/special_$ss.css : {}
+      css/login.css : {}
   js:
     js/script.js: {}
 EOT;
@@ -758,6 +759,15 @@ EOT;
     file_put_contents($tpath . "/templates/block.html.twig", $content);
   }
 
+  if (! file_exists($tpath . "/templates/status-messages.html.twig")) {
+
+    $content = <<<EOT
+    <!-- copy the code from core\modules\system\\templates\status-messages.html.twig -->
+EOT;
+
+    file_put_contents($tpath . "/templates/status-messages.html.twig", $content);
+  }
+
   /* node template */
 
   if (! file_exists($tpath . "/templates/node--contenttype--full.html.twig")) {
@@ -769,6 +779,13 @@ EOT;
   }
 
   /* CSS */
+
+  if (! file_exists($tpath . "/css/login.css")) {
+    $content = <<<EOT
+    /* --- Add Login styles --- */
+    EOT;
+    file_put_contents($tpath . "/css/login.css", $content);
+  }
 
   if (! file_exists($tpath . "/css/style.css")) {
     $content = <<<EOT
@@ -942,3 +959,8 @@ EOT;
 * $config['system.logging']['error_level'] = 'verbose';
  */
 
+
+ /**
+  * $form = \Drupal::formBuilder()->getForm(\Drupal\user\Form\UserLoginForm::class);
+  * $ret['#form'] = $form;
+  */
