@@ -5,95 +5,42 @@
 			<span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Internet Plans</span>
 			<h2 class="display-5 fw-bold mt-2">Choose Your Perfect Speed</h2>
 			<p class="lead text-secondary w-75 mx-auto">Fiber-powered plans with symmetrical upload & download, no
-				          contracts.</p>
+																          contracts.</p>
 		</div>
 		<div
 			class="row g-4 justify-content-center">
 			<!-- Plan 1 -->
-			<div class="col-lg-4 col-md-6">
-				<div class="card h-100 border-0 shadow-card price-card p-4">
-					<h3 class="fw-bold">Essential</h3>
-					<div class="mt-2 mb-3">
-						<span class="display-4 fw-bold">$39</span>
-						<span class="text-secondary">/mo</span>
-					</div>
-					<hr>
-					<ul class="list-unstyled mt-3 mb-4">
-						<li class="mb-2">
-							<i class="bi bi-wifi text-primary me-2"></i>
-							300 Mbps Download</li>
-						<li class="mb-2">
-							<i class="bi bi-wifi text-primary me-2"></i>
-							300 Mbps Upload</li>
-						<li class="mb-2">
-							<i class="bi bi-infinity text-primary me-2"></i>
-							Unlimited Data</li>
-						<li class="mb-2">
-							<i class="bi bi-router text-primary me-2"></i>
-							Standard Router</li>
-					</ul>
-					<div class="mt-auto">
-						<a href="#" class="btn btn-outline-primary rounded-pill w-100 py-2" data-bs-toggle="modal" data-bs-target="#signupModal">Get Essential</a>
-					</div>
-				</div>
-			</div>
-			<!-- Plan 2 (Popular) -->
-			<div class="col-lg-4 col-md-6">
-				<div class="card h-100 border-0 shadow-card price-card popular p-4">
-					<div class="popular-badge">🔥 MOST POPULAR</div>
-					<h3 class="fw-bold">Pro Turbo</h3>
-					<div class="mt-2 mb-3">
-						<span class="display-4 fw-bold">$59</span>
-						<span class="text-secondary">/mo</span>
-					</div>
-					<hr>
-					<ul class="list-unstyled mt-3 mb-4">
-						<li class="mb-2">
-							<i class="bi bi-wifi text-primary me-2"></i>
-							800 Mbps / 800 Mbps</li>
-						<li class="mb-2">
-							<i class="bi bi-shield-check text-primary me-2"></i>
-							WiFi 6 Mesh Extender</li>
-						<li class="mb-2">
-							<i class="bi bi-infinity text-primary me-2"></i>
-							Unlimited + Priority Support</li>
-						<li class="mb-2">
-							<i class="bi bi-trophy text-primary me-2"></i>
-							Free Static IP</li>
-					</ul>
-					<div class="mt-auto">
-						<a href="#" class="btn btn-primary rounded-pill w-100 py-2" data-bs-toggle="modal" data-bs-target="#signupModal">Upgrade to Pro</a>
+			{% for item in pac %}
+				<div class="col-lg-4 col-md-6">
+					<div class="card h-100 border-0 shadow-card price-card p-4">
+          {% if item.field_popular %}
+          <div class="popular-badge">🔥 MOST POPULAR</div>
+          {% endif %}
+						<h3 class="fw-bold">{{item.name}}</h3>
+						<div class="mt-2 mb-3">
+							<span class="display-4 fw-bold">${{item.field_price}}</span>
+							<span class="text-secondary">/mo</span>
+						</div>
+						<hr>
+						<ul class="list-unstyled mt-3 mb-4">
+            {% if item.field_items %}
+              {% for i in item.field_items %}
+                {% set var = i | split("\n") %}
+                {% set icon = var[0] ?? "" %}
+                {% set text = var[1] ?? "" %}
+              <li class="mb-2"><i class="{{icon}}"></i> {{text}}</li>
+              {% endfor %}
+            {% endif %}
+            </ul>
+						<div class="mt-auto">
+							{% if item.field_url %}
+              <a href="{{item.field_url.url}}" class="btn btn-outline-primary rounded-pill w-100 py-2" data-bs-toggle="modal" data-bs-target="#signupModal">{{item.field_url.title}}</a>
+              {% endif %}
+						</div>
 					</div>
 				</div>
-			</div>
-			<!-- Plan 3 -->
-			<div class="col-lg-4 col-md-6">
-				<div class="card h-100 border-0 shadow-card price-card p-4">
-					<h3 class="fw-bold">Gigabit Elite</h3>
-					<div class="mt-2 mb-3">
-						<span class="display-4 fw-bold">$89</span>
-						<span class="text-secondary">/mo</span>
-					</div>
-					<hr>
-					<ul class="list-unstyled mt-3 mb-4">
-						<li class="mb-2">
-							<i class="bi bi-lightning-charge text-primary me-2"></i>
-							1.2 Gbps / 1 Gbps</li>
-						<li class="mb-2">
-							<i class="bi bi-phone text-primary me-2"></i>
-							Whole-home WiFi Mesh</li>
-						<li class="mb-2">
-							<i class="bi bi-laptop text-primary me-2"></i>
-							Advanced Security Suite</li>
-						<li class="mb-2">
-							<i class="bi bi-gem text-primary me-2"></i>
-							Priority 24/7 Technician</li>
-					</ul>
-					<div class="mt-auto">
-						<a href="#" class="btn btn-outline-primary rounded-pill w-100 py-2" data-bs-toggle="modal" data-bs-target="#signupModal">Go Elite</a>
-					</div>
-				</div>
-			</div>
+			{% endfor %}
+
 		</div>
 	</div>
 </section>

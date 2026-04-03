@@ -62,6 +62,11 @@ class Hero_bannerBlock extends BlockBase
         "text" => [
           "type" => "textfield",
           "label" => "Text"
+        ],
+        "rem" => [
+          "type" => "submit",
+          "label" => "remove",
+          "action" => "removeOne"
         ]
       ]
         ];
@@ -69,7 +74,17 @@ class Hero_bannerBlock extends BlockBase
         $data['add_it'] = [
           "type" => "submit",
           "label" => "add",
-          "action" => "addOne"
+          "action" => "addOne",
+          "ajax" => [
+            "callback" => "ajaxCallback",
+            "wrapper" => "it"
+          ]
+        ];
+
+        $data['clear'] = [
+          "type" => "submit",
+          "label" => "x",
+          "action" => "clear"
         ];
 
 
@@ -78,54 +93,23 @@ class Hero_bannerBlock extends BlockBase
     return $data;
   }
 
+  public static function clear(array &$form, FormStateInterface $form_state){
+    \Ctrx\DrupalHelper::clearItems("", $form_state);
+  }
+
   public static function addOne(array &$form, FormStateInterface $form_state)
   {
-    $itemKey = "it"; //fieldset item key
-
-    $current = $form_state->get($itemKey);
-    $current[] = [
-      "text" => "/", //update this field.
-    ];
-
-    $form_state->set($itemKey, $current);
-    $newInput = $form_state->getUserInput(); // Save ang form input value antis mg reload para nd madula ang mga value
-    $form_state->setUserInput($newInput); // Refresh ang UI para ma update pati ang form.
-
-    $form_state->setRebuild(TRUE);
+    \Ctrx\DrupalHelper::addOne("", ["text", "rem"], $form_state);
   }
 
   public static function removeOne(array &$form, FormStateInterface $form_state)
   {
-    $itemKey = "promos"; //fieldset item key
-
-    $trigger = $form_state->getTriggeringElement();
-    $index = $trigger["#index"] ?? 0;
-    $items = $form_state->get($itemKey) ?? [];
-    unset($items[$index]);
-    $newItems = array_values($items);
-
-    $form_state->set($itemKey, $newItems);
-    $newInput = $form_state->getUserInput(); // Save ang form input value antis mg reload para nd madula ang mga value
-    unset($newInput['settings'][$itemKey][$index]); // kakson ang UI sa item nga gn removed
-    $newData = array_values($newInput['settings'][$itemKey] ?? []);
-    $newInput['settings'][$itemKey] = $newData;
-    $form_state->setUserInput($newInput); // Refresh ang UI para ma update pati ang form.
-    $form_state->setRebuild(TRUE);
+    \Ctrx\DrupalHelper::removeOne("", $form_state);
   }
 
-  public static function ajaxCallback(array $form, FormStateInterface $form_state)
+  public static function ajaxCallback(array &$form, FormStateInterface $form_state)
   {
-    $itemKey = "";
-    $complete_form = $form_state->getCompleteForm();
-
-    if (isset($complete_form[$itemKey])) {
-      return $complete_form[$itemKey];
-    }
-
-    if (isset($complete_form['settings'][$itemKey])) {
-      return $complete_form['settings'][$itemKey];
-    }
-    return $complete_form;
+    return \Ctrx\DrupalHelper::ajaxCallback("", $form_state);
   }
 
 
@@ -161,22 +145,7 @@ class Hero_bannerBlock extends BlockBase
   public function defaultConfiguration()
   {
     $data = $this->data();
-    $ret = [];
-    foreach ($data as $k => $v) {
-      if (isset($v['type'])) {
-        $type = $v['type'];
-        if ($type == "fieldset") {
-          $ret[$k] = [];
-        } else if ($type == "file" || $type == "file_managed") {
-          $ret[$k] = [];
-        } else if ($type == "submit") {
-          continue;
-        } else {
-          $ret[$k] = $v['default'] ?? "";
-        }
-      }
-    }
-    return $ret;
+    return \Ctrx\DrupalHelper::defaultConfig($data);
   }
 
   /**

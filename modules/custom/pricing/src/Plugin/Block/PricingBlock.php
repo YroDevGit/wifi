@@ -35,63 +35,34 @@ class PricingBlock extends BlockBase {
     return $data;
   }
 
+  public static function clear(array &$form, FormStateInterface $form_state){
+    \Ctrx\DrupalHelper::clearItems("", $form_state);
+  }
+
   public static function addOne(array &$form, FormStateInterface $form_state)
   {
-    $itemKey = ""; //fieldset item key
-
-    $current = $form_state->get($itemKey);
-    $current[] = [
-      "title" => "/", //update this field.
-      "subtitle" => "/",
-      "rem" => "/"
-    ];
-
-    $form_state->set($itemKey, $current);
-    $newInput = $form_state->getUserInput(); // Save ang form input value antis mg reload para nd madula ang mga value
-    $form_state->setUserInput($newInput); // Refresh ang UI para ma update pati ang form.
-
-    $form_state->setRebuild(TRUE);
+    \Ctrx\DrupalHelper::addOne("", ["text", "rem"], $form_state);
   }
 
   public static function removeOne(array &$form, FormStateInterface $form_state)
   {
-    $itemKey = "accordions"; //fieldset item key
-
-    $trigger = $form_state->getTriggeringElement();
-    $index = $trigger["#index"] ?? 0;
-    $items = $form_state->get($itemKey) ?? [];
-    unset($items[$index]);
-    $newItems = array_values($items);
-
-    $form_state->set($itemKey, $newItems);
-    $newInput = $form_state->getUserInput();// Save ang form input value antis mg reload para nd madula ang mga value
-    unset($newInput['settings'][$itemKey][$index]); // kakson ang UI sa item nga gn removed
-    $newData = array_values($newInput['settings'][$itemKey] ?? []);
-    $newInput['settings'][$itemKey] = $newData;
-    $form_state->setUserInput($newInput); // Refresh ang UI para ma update pati ang form.
-    $form_state->setRebuild(TRUE);
+    \Ctrx\DrupalHelper::removeOne("", $form_state);
   }
 
-  public static function ajaxCallback(array $form, FormStateInterface $form_state)
+  public static function ajaxCallback(array &$form, FormStateInterface $form_state)
   {
-    $itemKey = "";
-    $complete_form = $form_state->getCompleteForm();
-
-    if (isset($complete_form[$itemKey])) {
-      return $complete_form[$itemKey];
-    }
-
-    if (isset($complete_form['settings'][$itemKey])) {
-      return $complete_form['settings'][$itemKey];
-    }
-    return $complete_form;
+    return \Ctrx\DrupalHelper::ajaxCallback("", $form_state);
   }
 
   /**
    * {@inheritdoc}
    */
   public function newVariables(){
-    return [];
+    $list = \Ctrx\DrupalHelper::getTaxonomy("pac", ["id", "name", "field_price", "field_popular", "field_url", "field_items"]);
+    //dump($list);
+    return [
+      "#pac" => $list
+    ];
   }
 
   /**
@@ -112,56 +83,7 @@ class PricingBlock extends BlockBase {
   public function defaultConfiguration()
   {
     $data = $this->data();
-    $ret = [];
-    foreach($data as $k=>$v){
-      if(isset($v['type'])){
-        $type =$v['type'];
-        if($type == "fieldset"){
-          $ret[$k] = [];
-        }else if($type == "file" || $type == "file_managed"){
-          $ret[$k] = [];
-        }else if($type == "submit"){
-          continue;
-        }else{
-          $ret[$k] = $v['default'] ?? "";
-        }
-      }
-    }
-    return $ret;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function blockSubmiteFilterCTR($data, $except, $form, $form_state)
-  {
-    foreach ($data as $k => $v) {
-      if (in_array($v, $except)) continue;
-      if (isset($v['type'])) {
-        if ($v['type'] == "submit") continue;
-        if ($v['type'] == "markup" || $v['type'] == "html") continue;
-        if ($v['type'] == "fieldset") {
-          $items = $v['items'];
-          if (! empty($items)) {
-            foreach ($items as $ko => $lo) {
-              $this->blockSubmiteFilterCTR($lo, [], $form, $form_state);
-            }
-          }
-        }
-        $val = $form_state->getValue($k);
-        if($v['type'] == "auto" || $v['type'] == "auto_complete"){
-          $node = \Drupal\node\Entity\Node::load($val);
-          if($node){
-            $url = $node->toUrl()->toString();
-            $val = [
-              "page_id" => $val,
-              "url" => $url
-            ];
-          }
-        }
-        $this->configuration[$k] = $val;
-      }
-    }
+    return \Ctrx\DrupalHelper::defaultConfig($data);
   }
 
   /**

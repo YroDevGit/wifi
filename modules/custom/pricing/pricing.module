@@ -8,6 +8,7 @@ function pricing_theme() {
       'variables' => [
         'title' => NULL,
         'description' => NULL,
+        'pac' => NULL
       ],
       'template' => 'pricing',
     ],
